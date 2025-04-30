@@ -3,9 +3,9 @@
 10 times each time asynchronously wait 1 second then yield
 random number between 0 and 10.
 """
-from typing import AsyncGenerator
 import asyncio
 import random
+from typing import AsyncGenerator
 
 
 async def async_generator() -> AsyncGenerator[float, None]:

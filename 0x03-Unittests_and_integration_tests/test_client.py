@@ -4,7 +4,8 @@
 from client import GithubOrgClient
 import unittest
 from unittest.mock import patch, PropertyMock
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
+from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -76,3 +77,31 @@ class TestGithubOrgClient(unittest.TestCase):
         """Test has_license returns expected result"""
         result = GithubOrgClient.has_license(repo, license_key)
         self.assertEqual(result, expected)
+
+
+@parameterized_class([
+    {
+        "org_payload": org_payload,
+        "repos_payload": repos_payload,
+        "expected_repos": expected_repos,
+        "apache2_repos": apache2_repos
+    }
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """Integration test for GithubOrgClient.public_repos"""
+    @classmethod
+    def setUpClass(cls):
+        """Set up by mocking requests.get using side_effect"""
+        cls.get_patcher = patch("utils.requests.get")
+
+        mock_get = cls.get_patcher.start()
+        # Create mock responses in the order of expected calls
+        mock_get.side_effect = [
+            Mock(**{"json.return_value": cls.org_payload}),
+            Mock(**{"json.return_value": cls.repos_payload})
+        ]
+
+    @classmethod
+    def tearDownClass(cls):
+        """Stop patcher after tests"""
+        cls.get_patcher.stop()

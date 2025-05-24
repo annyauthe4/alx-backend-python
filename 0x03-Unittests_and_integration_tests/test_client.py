@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Unit tests for client.GithubOrgClient"""
 
+from client import GithubOrgClient
 import unittest
 from unittest.mock import patch
 from parameterized import parameterized
-from client import GithubOrgClient
 
 
 class TestGithubOrgClient(unittest.TestCase):
